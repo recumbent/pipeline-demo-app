@@ -13,6 +13,8 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 [<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.Json.JsonSerializer>)>]
 ()
 
+type Lookup = int -> int -> Response.Root option
+
 module helpers =
     let ReadFromCache clientId quoteId = 
         match clientId with
@@ -22,7 +24,17 @@ module helpers =
     let FetchFromApi clientId quoteId = 
         Some(Response.Root(clientId, quoteId, "api quote"))
 
+    let Handler (readFromCache:Lookup) (fetchFromApi:Lookup) (lookupRequest:Request.Root) =
+        match readFromCache lookupRequest.ClientId lookupRequest.QuoteId with
+        | Some(quote) -> quote
+        | None ->
+            (fetchFromApi lookupRequest.ClientId lookupRequest.QuoteId).Value
+
 type Function() =
+
+    let Handler = helpers.Handler helpers.ReadFromCache helpers.FetchFromApi
+
+
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
     /// </summary>
@@ -30,7 +42,4 @@ type Function() =
     /// <param name="context"></param>
     /// <returns></returns>
     member __.FunctionHandler (input: Request.Root) (_: ILambdaContext) =
-        match helpers.ReadFromCache input.ClientId input.QuoteId with
-        | Some(quote) -> quote
-        | None ->
-            (helpers.FetchFromApi input.ClientId input.QuoteId).Value
+        Handler input

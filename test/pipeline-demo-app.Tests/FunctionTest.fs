@@ -8,13 +8,26 @@ open pipeline_demo_app
 
 
 module FunctionTest =
+
+    // Stub functions
+    let ReadFromCache clientId quoteId = 
+        match clientId with
+        | 1 -> Some(Response.Root(clientId, quoteId, "cached quote"))
+        | _ -> None
+
+    let FetchFromApi clientId quoteId = 
+        Some(Response.Root(clientId, quoteId, "api quote"))
+
+    let DontCallMe _ _ =
+        failwith "Shouldn't have been called" 
+
     [<Fact>]
     let ``Invoke Quote Lambda Function``() =
-        // Invoke the lambda function and confirm the string was upper cased.
-        let lambdaFunction = Function()
+        // Invoke the lambda function handler and confirm the string was upper cased.
+        let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
         let context = TestLambdaContext()
         let request = Request.Root(1,2)
-        let result = lambdaFunction.FunctionHandler request context
+        let result = lambdaFunction request // context
 
         Assert.Equal(request.ClientId, result.ClientId)
         Assert.Equal(request.QuoteId, result.QuoteId)
@@ -23,10 +36,10 @@ module FunctionTest =
     [<Fact>]
     let ``Invoke Quote Lambda Function for no cache``() =
         // Invoke the lambda function and confirm the string was upper cased.
-        let lambdaFunction = Function()
+        let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
         let context = TestLambdaContext()
         let request = Request.Root(2,1)
-        let result = lambdaFunction.FunctionHandler request context
+        let result = lambdaFunction request // context
 
         Assert.Equal(request.ClientId, result.ClientId)
         Assert.Equal(request.QuoteId, result.QuoteId)
