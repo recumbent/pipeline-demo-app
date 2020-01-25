@@ -18,7 +18,7 @@ module FunctionTest =
 
         Assert.Equal(1, result.ClientId)
         Assert.Equal(2, result.QuoteId)
-        Assert.Equal("sample quote", result.Text)
+        Assert.Equal("cached quote", result.Text)
 
     // let ``Data in cache should not call api``
     // let ``Data in cache should not call SSM``

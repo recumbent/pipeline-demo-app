@@ -13,6 +13,12 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 [<assembly: LambdaSerializer(typeof<Amazon.Lambda.Serialization.Json.JsonSerializer>)>]
 ()
 
+module helpers =
+    let ReadFromCache clientId quoteId = 
+        Some(Response.Root(clientId, quoteId, "cached quote"))
+
+    let FetchFromApi clientId quoteId = 
+        Some(Response.Root(clientId, quoteId, "api quote"))
 
 type Function() =
     /// <summary>
@@ -22,4 +28,7 @@ type Function() =
     /// <param name="context"></param>
     /// <returns></returns>
     member __.FunctionHandler (input: Request.Root) (_: ILambdaContext) =
-        Response.Root(input.ClientId, input.QuoteId, "sample quote")
+        match helpers.ReadFromCache input.ClientId input.QuoteId with
+        | Some(quote) -> quote
+        | None ->
+            (helpers.FetchFromApi input.ClientId input.QuoteId).Value
