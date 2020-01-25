@@ -9,13 +9,16 @@ open pipeline_demo_app
 
 module FunctionTest =
     [<Fact>]
-    let ``Invoke ToUpper Lambda Function``() =
+    let ``Invoke Quote Lambda Function``() =
         // Invoke the lambda function and confirm the string was upper cased.
         let lambdaFunction = Function()
         let context = TestLambdaContext()
-        let upperCase = lambdaFunction.FunctionHandler "hello world" context
+        let request = Request.Root(1,2)
+        let result = lambdaFunction.FunctionHandler request context
 
-        Assert.Equal("HELLO WORLD", upperCase)
+        Assert.Equal(1, result.ClientId)
+        Assert.Equal(2, result.QuoteId)
+        Assert.Equal("sample quote", result.Text)
 
     [<EntryPoint>]
     let main _ = 0
