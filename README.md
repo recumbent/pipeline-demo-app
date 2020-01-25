@@ -17,9 +17,9 @@ Don't  worry too much about error handling, kinda not the point here
 
 ## TODO
 
-* Define schema for function request
-* Define schema for function response
-* Define schema/api for called service
+* ~~Define schema for function request~~
+* ~~Define schema for function response~~
+* ~~Define schema/api for called service~~
 * Called service... (variation on the one I already have, possibly as a lambda since there's a template for that)
 * Return hard coded response - with test
 * Return mocked response (extends test, manages to "DI" the called code, if I can work that out...)
@@ -62,7 +62,7 @@ Don't  worry too much about error handling, kinda not the point here
 
 ```json
 {
-	"author": "Douglas Adams"
+	"author": "Douglas Adams",
 	"quote": "this is a quote"
 }
 ```
