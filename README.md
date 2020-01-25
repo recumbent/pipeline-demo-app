@@ -35,3 +35,34 @@ Don't  worry too much about error handling, kinda not the point here
 * Somewhere in the midst of this simple config
 * And logging I suppose...
 
+## Schemas
+
+### Request Payload
+
+```json
+{
+	"clientId": 1,
+	"quoteId": 2
+}
+```
+
+### Response Data
+
+```json
+{
+	"clientId": 1,
+	"quoteId": 2,
+	"text": "this is a quote"
+}
+```
+
+### API
+
+`http://example.com/dna/2`
+
+```json
+{
+	"author": "Douglas Adams"
+	"quote": "this is a quote"
+}
+```
