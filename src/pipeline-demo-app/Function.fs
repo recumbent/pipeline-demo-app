@@ -15,7 +15,9 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 
 module helpers =
     let ReadFromCache clientId quoteId = 
-        Some(Response.Root(clientId, quoteId, "cached quote"))
+        match clientId with
+        | 1 -> Some(Response.Root(clientId, quoteId, "cached quote"))
+        | _ -> None
 
     let FetchFromApi clientId quoteId = 
         Some(Response.Root(clientId, quoteId, "api quote"))
