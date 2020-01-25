@@ -20,5 +20,9 @@ module FunctionTest =
         Assert.Equal(2, result.QuoteId)
         Assert.Equal("sample quote", result.Text)
 
+    // let ``Data in cache should not call api``
+    // let ``Data in cache should not call SSM``
+    // let ``No data in cache should call api with parans``
+
     [<EntryPoint>]
     let main _ = 0
