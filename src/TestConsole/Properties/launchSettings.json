@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "TestConsole": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "AWS_SECRET_ACCESS_KEY": "NOT-A-SECRET",
+        "AWS_ACCESS_KEY_ID": "NOT-A-KEY"
+      }
+    }
+  }
+}

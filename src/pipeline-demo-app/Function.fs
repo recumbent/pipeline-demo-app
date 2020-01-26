@@ -3,7 +3,12 @@ namespace pipeline_demo_app
 open Amazon.Lambda.Core
 
 open System
+open System.IO
 open FSharp.Data
+
+open Amazon
+open Amazon.S3
+open Amazon.S3.Model
 
 type Request = JsonProvider<""" { "clientId": 1, "quoteId": 2 } """>
 type Response = JsonProvider<""" { "clientId": 1, "quoteId": 2, "text": "this is a quote" } """>
@@ -15,6 +20,23 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 
 type Lookup = int -> int -> Response.Root option
 
+module aws =
+    let s3Config = AmazonS3Config(RegionEndpoint = RegionEndpoint.EUWest2, ForcePathStyle = true, ServiceURL = "http://localhost:4572" )
+    
+    let readS3 bucket key =
+        let s3 = new AmazonS3Client(s3Config)
+        let req = GetObjectRequest( BucketName = bucket, Key = key)
+        let s3Object = s3.GetObjectAsync(req) |> Async.AwaitTask |> Async.RunSynchronously
+        use sr = new StreamReader(s3Object.ResponseStream)
+        let content = sr.ReadToEnd()
+        content
+   
+
+    let writeS3 bucket key content = 
+        let s3 = new AmazonS3Client(s3Config)
+        let req = PutObjectRequest( BucketName = bucket, Key = key, ContentBody = content)
+        s3.PutObjectAsync(req) |> Async.AwaitTask|> Async.RunSynchronously |> ignore
+            
 module helpers =
     let ReadFromCache clientId quoteId = 
         match clientId with
