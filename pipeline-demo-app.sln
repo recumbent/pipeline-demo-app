@@ -9,7 +9,15 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "pipeline-demo-app.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB994E83-04C8-46E4-9F81-C98581DF9867}"
 	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		NOTES.md = NOTES.md
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", "{9C55978F-01F3-4D6F-97DC-3CE93DCACC2B}"
+	ProjectSection(SolutionItems) = preProject
+		data\quote-01.json = data\quote-01.json
+		data\quote-02.json = data\quote-02.json
 	EndProjectSection
 EndProject
 Global

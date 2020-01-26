@@ -21,7 +21,7 @@ Don't  worry too much about error handling, kinda not the point here
 * ~~Define schema for function response~~
 * ~~Define schema/api for called service~~
 * Called service... (variation on the one I already have, possibly as a lambda since there's a template for that)
-* Return hard coded response - with test
+* ~~Return hard coded response - with test~~
 * Return mocked response (extends test, manages to "DI" the called code, if I can work that out...)
 * List progression in handler don't worry about failure cases (much)
 * Stub out all the dependencies (cheat the responses based on the request)
