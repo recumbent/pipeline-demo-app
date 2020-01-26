@@ -26,11 +26,11 @@ Don't  worry too much about error handling, kinda not the point here
 * List progression in handler don't worry about failure cases (much)
 * Stub out all the dependencies (cheat the responses based on the request)
 * API call implementation (use type provider)
-* Localstack S3/SSM - docker-compose
+* ~~Localstack S3/SSM - docker-compose~~
 * S3 imp
 	* Test ??
-	* read
-	* write
+	* ~~read~~
+	* ~~write~~
 * SSM imp
 * Somewhere in the midst of this simple config
 * And logging I suppose...

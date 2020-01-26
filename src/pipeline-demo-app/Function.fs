@@ -9,6 +9,8 @@ open FSharp.Data
 open Amazon
 open Amazon.S3
 open Amazon.S3.Model
+open Amazon.SimpleSystemsManagement
+open Amazon.SimpleSystemsManagement.Model
 
 type Request = JsonProvider<""" { "clientId": 1, "quoteId": 2 } """>
 type Response = JsonProvider<""" { "clientId": 1, "quoteId": 2, "text": "this is a quote" } """>
@@ -21,7 +23,8 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 type Lookup = int -> int -> Response.Root option
 
 module aws =
-    let s3Config = AmazonS3Config(RegionEndpoint = RegionEndpoint.EUWest2, ForcePathStyle = true, ServiceURL = "http://localhost:4572" )
+    let s3Config = AmazonS3Config(ForcePathStyle = true, ServiceURL = "http://localhost:4572")
+    let ssmConfig = AmazonSimpleSystemsManagementConfig(ServiceURL = "http://localhost:4583")
     
     let readS3 bucket key =
         let s3 = new AmazonS3Client(s3Config)
@@ -36,7 +39,27 @@ module aws =
         let s3 = new AmazonS3Client(s3Config)
         let req = PutObjectRequest( BucketName = bucket, Key = key, ContentBody = content)
         s3.PutObjectAsync(req) |> Async.AwaitTask|> Async.RunSynchronously |> ignore
-            
+    
+    let readSSM name = 
+        let ssm = new AmazonSimpleSystemsManagementClient(ssmConfig)
+        // printfn "R - Region: %s" ssm.Config.RegionEndpoint.DisplayName
+        let req = GetParameterRequest(Name = name)
+        let ssmObject = ssm.GetParameterAsync(req)  |> Async.AwaitTask |> Async.RunSynchronously
+        ssmObject.Parameter.Value
+
+    let readSSMPath path = 
+        let ssm = new AmazonSimpleSystemsManagementClient(ssmConfig)
+        // printfn "RP - Region: %s" ssm.Config.RegionEndpoint.DisplayName
+        let req = GetParametersByPathRequest(Path = path, Recursive = true, WithDecryption = true)
+        let ssmObject = ssm.GetParametersByPathAsync(req) |> Async.AwaitTask |> Async.RunSynchronously
+        ssmObject //.Parameter.Value
+
+    let writeSSM name param =
+        let ssm = new AmazonSimpleSystemsManagementClient(ssmConfig)
+        // printfn "W - Region: %s" ssm.Config.RegionEndpoint.DisplayName
+        let req = PutParameterRequest(Name = name, Value = param, Overwrite = true, Type = ParameterType.String)
+        ssm.PutParameterAsync(req) |> Async.AwaitTask|> Async.RunSynchronously |> ignore
+
 module helpers =
     let ReadFromCache clientId quoteId = 
         match clientId with
