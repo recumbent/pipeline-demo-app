@@ -26,7 +26,7 @@ module FunctionTest =
         // Invoke the lambda function handler and confirm the string was upper cased.
         let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
         let context = TestLambdaContext()
-        let request = Request.Root(1,2)
+        let request = { ClientId = 1; QuoteId = 2 }
         let result = lambdaFunction request // context
 
         Assert.Equal(request.ClientId, result.ClientId)
@@ -38,7 +38,7 @@ module FunctionTest =
         // Invoke the lambda function and confirm the string was upper cased.
         let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
         let context = TestLambdaContext()
-        let request = Request.Root(2,1)
+        let request = { ClientId = 2; QuoteId = 1 }
         let result = lambdaFunction request // context
 
         Assert.Equal(request.ClientId, result.ClientId)
