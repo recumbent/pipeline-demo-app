@@ -121,14 +121,14 @@ module helpers =
         Some(quote)
 
     let Handler (readFromCache:Lookup) (fetchFromApi:Lookup) (lookupRequest:Request) =
-        let quoteValue =
-            match readFromCache lookupRequest.ClientId lookupRequest.QuoteId with
-            | Some(quote) -> quote
-            | None ->
-                let newQuote = fetchFromApi lookupRequest.ClientId lookupRequest.QuoteId
-                WriteToCache newQuote.Value
-                newQuote.Value
+        match readFromCache lookupRequest.ClientId lookupRequest.QuoteId with
+        | Some(quote) -> quote
+        | None ->
+            let newQuote = fetchFromApi lookupRequest.ClientId lookupRequest.QuoteId
+            WriteToCache newQuote.Value
+            newQuote.Value
         
+
 type Function() =
 
     let Handler = helpers.Handler helpers.ReadFromCache helpers.FetchFromApi
