@@ -7,3 +7,7 @@
 
 .vs
 /integration/node_modules
+/integration/mochawesome-report
+/integration/test-results/mocha
+/lambda.zip
+**/*.received.txt

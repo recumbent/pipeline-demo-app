@@ -12,12 +12,12 @@ import { LAMBDA_ENDPOINT } from "../../utils/endpoints";
 const relativePathToLambda = isCi ? "../../" : "../../../";
 const lambdaDir = path.resolve(__dirname, relativePathToLambda);
 const zip = fs.readFileSync(`${lambdaDir}/lambda.zip`);
-const functionName = "link-transform";
+const functionName = "lookup-quote";
 
-describe("hello-world", () => {
+describe("Demonstration tests", () => {
   const lambda = new awsSdk.Lambda({
     endpoint: LAMBDA_ENDPOINT,
-    region: "eu-west-1"
+    region: "us-east-1"
   });
 
   const createParams = {
@@ -25,9 +25,16 @@ describe("hello-world", () => {
       ZipFile: zip
     },
     FunctionName: functionName,
-    Handler: "lambda.handler",
+    Handler: "pipeline-demo-app::pipeline_demo_app.Function::FunctionHandler",
     Role: "test",
-    Runtime: "nodejs12.x"
+    Runtime: "dotnetcore2.1",
+    Environment: {
+      Variables: {
+        AWS_SECRET_ACCESS_KEY: "key",
+        AWS_ACCESS_KEY_ID: "secret",
+        AWS_DEFAULT_REGION: "us-east-1"
+      }
+    }
   };
 
   const deleteParams = {
@@ -35,7 +42,7 @@ describe("hello-world", () => {
   };
 
   before(async function() {
-    this.timeout(10000); // Give the lambda image time to download
+    this.timeout(60000); // Give the lambda image time to download
 
     await lambda.createFunction(createParams).promise();
   });

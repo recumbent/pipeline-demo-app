@@ -1,3 +1,3 @@
 describe("Link Transformation Service", () => {
-  require("./hello-world");
+  require("./demo");
 });
