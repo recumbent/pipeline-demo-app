@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: dockerfile-command
     environment:
-      - ENVIRONMENT=ci
+      - environment=ci
       - AWS_ACCESS_KEY_ID=KEY
       - AWS_SECRET_ACCESS_KEY=SECRET
       - AWS_REGION=eu-west-1

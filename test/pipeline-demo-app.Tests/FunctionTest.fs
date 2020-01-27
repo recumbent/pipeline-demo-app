@@ -24,7 +24,7 @@ module FunctionTest =
     [<Fact>]
     let ``Invoke Quote Lambda Function``() =
         // Invoke the lambda function handler and confirm the string was upper cased.
-        let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
+        let lambdaFunction = helpers.Handler ReadFromCache DontCallMe
         let context = TestLambdaContext()
         let request = { ClientId = 1; QuoteId = 2 }
         let result = lambdaFunction request // context

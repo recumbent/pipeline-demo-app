@@ -12,6 +12,8 @@ open Amazon.S3.Model
 open Amazon.SimpleSystemsManagement
 open Amazon.SimpleSystemsManagement.Model
 
+open Microsoft.Extensions.Configuration
+
 // type Request = JsonProvider<""" { "clientId": 1, "quoteId": 2 } """>
 
 [<CLIMutable>]
@@ -31,9 +33,31 @@ type ApiResponse = JsonProvider<""" { "author": "Douglas Adams", "quote": "this 
 
 type Lookup = int -> int -> Response.Root option
 
+
+module config =
+    let env = Environment.GetEnvironmentVariable("environment");
+    let envSettings = sprintf "appSettings.%s.json" env
+    let configuration = 
+        ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appSettings.json")
+            .AddJsonFile(envSettings, optional = true)
+            .AddJsonFile("appSettings.local", optional = true)
+            .AddEnvironmentVariables()
+            .Build()
+
 module aws =
-    let s3Config = AmazonS3Config(ForcePathStyle = true, ServiceURL = "http://localhost:4572")
-    let ssmConfig = AmazonSimpleSystemsManagementConfig(ServiceURL = "http://localhost:4583")
+    let s3Config = 
+        if (config.configuration.["s3Endpoint"] <> null) then
+            AmazonS3Config(ForcePathStyle = true, ServiceURL = config.configuration.["s3Endpoint"])
+        else
+            AmazonS3Config()
+
+    let ssmConfig =
+        if (config.configuration.["ssmEndpoint"] <> null) then
+            AmazonSimpleSystemsManagementConfig(ServiceURL = config.configuration.["ssmEndpoint"])
+        else
+            AmazonSimpleSystemsManagementConfig()
     
     let existsInS3 bucket key =
         let s3 = new AmazonS3Client(s3Config)
@@ -97,7 +121,7 @@ module helpers =
 
     let MakeApiRequest quoteId secret = 
 
-        let uri = sprintf "https://86w5r4xyvk.execute-api.eu-west-2.amazonaws.com/Prod/quote/dna/%i" quoteId // Should be function, server should be from config
+        let uri = sprintf "%s/quote/dna/%i" config.configuration.["quoteHost"] quoteId // Should be function, server should be from config
         let content = HttpRequestHeaders.Accept HttpContentTypes.Json // Ditto
         let auth = HttpRequestHeaders.Authorization secret
 
