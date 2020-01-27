@@ -3,13 +3,27 @@ services:
   localstack:
     image: "localstack/localstack:0.10.5"
     ports:
-      - "4572:4572"
       - "4574:4574"
-      - "4583:4583"
       - "8080:8080"
     environment:
       - LAMBDA_EXECUTOR=docker
-      - SERVICES=lambda,s3,ssm
+      - SERVICES=lambda
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     container_name: localstack
+  command:
+    build:
+      context: .
+      dockerfile: dockerfile-command
+    environment:
+      - ENVIRONMENT=ci
+      - AWS_ACCESS_KEY_ID=KEY
+      - AWS_SECRET_ACCESS_KEY=SECRET
+      - AWS_REGION=eu-west-1
+    container_name: command
+    stdin_open: true
+    tty: true
+    ports:
+      - "8082:8082"
+    depends_on:
+      - localstack

@@ -1,0 +1,10 @@
+FROM circleci/node:lts
+
+USER root
+WORKDIR /root
+COPY ./integration ./
+COPY ./lambda.zip ./
+
+EXPOSE 8082
+
+CMD ["/bin/bash"]
