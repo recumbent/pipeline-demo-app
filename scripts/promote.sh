@@ -45,7 +45,7 @@ then
 fi
 
 deploy_artefact="./publish/lambda.zip"
-deploy_base="s3://murph-deployment/"
+deploy_base="s3://murph-deployment"
 
 artefact_sfx=$(echo ${deploy_artefact} | awk -F. 'END { print $NF }')
 
