@@ -58,32 +58,31 @@ jobs:
 
   integration_test:
     executor: build
-      steps:
-        - setup_remote_docker
-        - attach_workspace:
-            at: .
-        - run:
-            name: Container npm login and install packages
-            command: |
-              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN_READONLY}" > ~/.npmrc
-              cd ./integration && npm install
-        - run:
-            name: run ci integration script
-            command: |
-              ./scripts/ci_run_integration_tests.sh
-        - store_artifacts:
-            path: mochawesome-report
-            destination: report
-        - store_artifacts:
-            path: failed-approvals
-        - store_test_results:
-            path: test-results
-        - persist_to_workspace:
-            root: .
-            paths:
-              - scripts/*
-              - infrastructure/*
-
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: .
+      - run:
+          name: Container npm login and install packages
+          command: |
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN_READONLY}" > ~/.npmrc
+            cd ./integration && npm install
+      - run:
+          name: run ci integration script
+          command: |
+            ./scripts/ci_run_integration_tests.sh
+      - store_artifacts:
+          path: mochawesome-report
+          destination: report
+      - store_artifacts:
+          path: failed-approvals
+      - store_test_results:
+          path: test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - scripts/*
+            - infrastructure/*
 
   publish:
     executor: 
@@ -120,10 +119,10 @@ workflows:
           context: aws-build
 
       - publish:
-        context: aws-publish
-        requires:
-          - build
+          context: aws-publish
+          requires:
+            - build
           # - integration_test
-        filters:
-          branches:
-            only: master
+          filters:
+            branches:
+              only: master
