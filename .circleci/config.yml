@@ -47,7 +47,7 @@ jobs:
           name: package app
           command: |
             export PATH="$PATH:/root/.dotnet/tools"
-            dotnet lambda package --project-location ./src/pipeline-demo-app/ -o lambda.zip
+            dotnet lambda package --project-location ./src/pipeline-demo-app/ -o ./publish/lambda.zip
 
       - persist_to_workspace:
           root: .
@@ -81,6 +81,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - publish/*
             - scripts/*
             - infrastructure/*
 

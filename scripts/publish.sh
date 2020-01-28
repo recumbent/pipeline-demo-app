@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-deploy_artefact="./lambda.zip"
+deploy_artefact="./publish/lambda.zip"
 
 functionkey=${CIRCLE_PROJECT_REPONAME}/dev/${CIRCLE_SHA1}.zip
 
