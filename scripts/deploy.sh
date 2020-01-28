@@ -48,7 +48,7 @@ if ! aws ${aws_env_str} cloudformation describe-stacks --stack-name ${stack_name
 
   aws ${aws_env_str} cloudformation create-stack \
     --stack-name ${stack_name} \
-    --template-body file://infrastructure/resources.cf.json \
+    --template-body file://infrastructure/template.yml \
     --parameters file:///tmp/parameters.json \
     --capabilities CAPABILITY_NAMED_IAM 
 
@@ -59,7 +59,7 @@ else
   # create change set updating parameters
   aws ${aws_env_str} cloudformation update-stack \
     --stack-name ${stack_name} \
-    --template-body file://infrastructure/resources.cf.json \
+    --template-body file://infrastructure/template.yml \
     --parameters file:///tmp/parameters.json \
     --capabilities CAPABILITY_NAMED_IAM 
 
