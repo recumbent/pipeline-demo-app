@@ -6,7 +6,6 @@ open System
 open System.IO
 open FSharp.Data
 
-open Amazon
 open Amazon.S3
 open Amazon.S3.Model
 open Amazon.SimpleSystemsManagement
@@ -35,7 +34,7 @@ type Lookup = int -> int -> Response.Root option
 
 
 module config =
-    let env = Environment.GetEnvironmentVariable("environment");
+    let env = Environment.GetEnvironmentVariable("environment")
     let envSettings = sprintf "appSettings.%s.json" env
     let configuration = 
         ConfigurationBuilder()
@@ -49,13 +48,13 @@ module config =
 module aws =
     let s3Config = 
         if (config.configuration.["s3Endpoint"] <> null) then
-            AmazonS3Config(ForcePathStyle = true, ServiceURL = config.configuration.["s3Endpoint"])
+            AmazonS3Config(ForcePathStyle = true, ServiceURL = config.configuration.["s3Endpoint"], UseHttp = true)
         else
             AmazonS3Config()
 
     let ssmConfig =
         if (config.configuration.["ssmEndpoint"] <> null) then
-            AmazonSimpleSystemsManagementConfig(ServiceURL = config.configuration.["ssmEndpoint"])
+            AmazonSimpleSystemsManagementConfig(ServiceURL = config.configuration.["ssmEndpoint"], UseHttp = true)
         else
             AmazonSimpleSystemsManagementConfig()
     
@@ -96,10 +95,10 @@ module aws =
         ssm.PutParameterAsync(req) |> Async.AwaitTask|> Async.RunSynchronously |> ignore
 
 module helpers =
-    let bucket = "test-bucket" // This should be from config
+    let bucket = config.configuration.["bucketName"]
 
     let MakeSecretName clientId =
-        sprintf "/demo/quote/%i/secret" clientId
+        sprintf "/demo/quotes/%i/secret" clientId
 
     let MakeFileKey clientId quoteId =
         sprintf "%i/%i.json" clientId quoteId
@@ -157,5 +156,10 @@ type Function() =
 
     let Handler = helpers.Handler helpers.ReadFromCache helpers.FetchFromApi
 
-    member __.FunctionHandler (input: Request) (_: ILambdaContext) =
+    member __.FunctionHandler (input: Request) (context: ILambdaContext) =
+        context.Logger.Log(sprintf "Env: %s" config.env)
+        context.Logger.Log(sprintf "S3: %s" config.configuration.["s3Endpoint"])
+        context.Logger.Log(sprintf "S3: %s" config.configuration.["bucketName"])
+        
         (Handler input).ToString()
+        
