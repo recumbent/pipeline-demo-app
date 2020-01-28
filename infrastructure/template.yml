@@ -17,6 +17,57 @@ Parameters:
     Description: S3 Key for the lambda file
     Type: String
 Resources:
+  QuoteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: murph-quote-bucket
+      VersioningConfiguration:
+        Status: Enabled
+  QuoteFetchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: QuoteFetchPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+                  - s3:DeleteObjectVersion
+                  - s3:GetObjectVersionTagging
+                  - s3:ListBucket
+                  - s3:GetObjectAcl
+                  - s3:AbortMultipartUpload
+                  - s3:GetObjectTagging
+                  - s3:DeleteObject
+                  - s3:ListBucketMultipartUploads
+                  - s3:GetObjectRetention
+                  - s3:ListMultipartUploadParts
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:GetBucketLocation
+                  - s3:GetObjectVersion
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:s3:::'
+                - Ref: QuoteBucket
+                - "/*"
   Function:
     Type: AWS::Lambda::Function
     Properties:
@@ -28,13 +79,8 @@ Resources:
       Handler: "pipeline-demo-app::pipeline_demo_app.Function::FunctionHandler"
       MemorySize: 512
       Runtime: "dotnetcore2.1"
+      Role: !GetAtt QuoteFetchRole.Arn
       Timeout: 60
       Environment:
         Variables:
           environment: !Ref Environment
-  Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: murph-quote-bucket
-      VersioningConfiguration:
-        Status: Enabled
