@@ -1,0 +1,50 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@3.4.1
+  aws-cli: circleci/aws-cli@0.1.19
+  node: circleci/node@1.1.6
+
+executors:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.1
+
+  publish:
+    docker:
+      - image: circleci/python:3.7
+
+jobs:
+  build:
+    executor: build
+    steps:
+      - checkout
+
+      - run:
+          name: install aws lambda tools
+          command: |
+            dotnet tool install -g Amazon.Lambda.Tools
+
+      - run:
+          name: Install packages
+          command: dotnet restore
+
+      - run:
+          name: build
+          command: dotnet build
+
+      - run:
+          name: Run tests
+          command: dotnet test
+
+      - run:
+          name: package app
+          command: |
+            dotnet lambda package --project-location ./src/pipeline-demo-app/
+
+workflows:
+  version: 2
+  build_publish:
+    jobs:
+      - build:
+          context: aws-build
