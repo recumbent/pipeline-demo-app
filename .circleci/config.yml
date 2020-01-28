@@ -112,9 +112,44 @@ jobs:
             - scripts/*
             - infrastructure/*
 
+  promote:
+    executor: 
+      name: aws-cli/default
+      python-version: '3.7'
+
+    environment:
+      AWS_DEFAULT_REGION: eu-west-2
+
+    parameters:
+      fromenvironment:
+        type: enum
+        enum: ["dev", "test"]
+      toenvironment:
+        type: enum
+        enum: ["test","prod"]
+    
+    steps:
+      - attach_workspace:
+          at: .
+      
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+
+      - run:
+          name: Promote lambda to new environment
+          command: |
+            bash ./scripts/promote.sh -s <<parameters.fromenvironment>> -e <<parameters.toenvironment>>
+
+        - persist_to_workspace:
+            root: .
+            paths:
+              - scripts/*
+              - infrastructure/*
+
 workflows:
   version: 2
-  build_publish:
+  demo-pipeline:
     jobs:
       - build:
           context: aws-build
@@ -127,3 +162,21 @@ workflows:
           filters:
             branches:
               only: master
+
+      - quality-gate: # <<< A job that will require manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          requires: # We only run the "hold" job when publish has succeeded
+            - publish
+          
+          filters:
+            branches:
+              only: master
+
+      - promote:
+          context: aws-publish # Should be promote context
+          requires:
+            - quality-gate
+          filters:
+            branches:
+              only: master  
+
