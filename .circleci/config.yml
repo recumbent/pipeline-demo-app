@@ -199,10 +199,10 @@ workflows:
             branches:
               only: master
 
-      - deploy-dev:
-          context: aws-publish # Should be aws-deploy
+      - deploy:
           targetenvironment: dev
           isrelease: true
+          context: aws-publish # Should be aws-deploy
           requires:
             - publish
           filters:
