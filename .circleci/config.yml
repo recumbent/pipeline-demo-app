@@ -112,6 +112,42 @@ jobs:
             - scripts/*
             - infrastructure/*
 
+  deploy:
+    executor: 
+      name: aws-cli/default
+      python-version: '3.7'
+
+    environment:
+      AWS_DEFAULT_REGION: eu-west-2
+
+    parameters:
+      targetenvironment:
+        type: enum
+        default: "dev"
+        enum: ["dev","test","prod"]
+
+      isrelease:
+        type: boolean
+        default: false
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+
+      - run:
+          name: Deploy lambda function (using cloudformation stack)
+          command: bash ./scripts/deploy.sh -e <<parameters.targetenvironment>>
+
+      # - when:
+      #     condition: <<parameters.isrelease>>
+      #     steps:
+      #       - release_slack_notification:
+      #           environment: <<parameters.targetenvironment>>
+          
   promote:
     executor: 
       name: aws-cli/default
@@ -163,10 +199,20 @@ workflows:
             branches:
               only: master
 
+      - deploy-dev:
+          context: aws-publish # Should be aws-deploy
+          targetenvironment: dev
+          isrelease: true
+          requires:
+            - publish
+          filters:
+            branches:
+              only: master
+
       - quality-gate: # <<< A job that will require manual approval in the CircleCI web application.
           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
           requires: # We only run the "hold" job when publish has succeeded
-            - publish
+            - deploy-dev
           
           filters:
             branches:

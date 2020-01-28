@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: CloudFormation template to deploy snowflake-sessionmerge-lambda
+Description: CloudFormation template to deploy pipeline-demo
 Parameters:
   Environment:
     Description: Name of the AWS Environment the function is running in
@@ -12,10 +12,11 @@ Parameters:
   FunctionS3Bucket:
     Description: S3 Bucket where the lambda code is stored
     Type: String
-    Default: murphy-deployment
+    Default: murph-deployment
   FunctionS3Key:
     Description: S3 Key for the lambda file
     Type: String
+Resources:
   Function:
     Type: AWS::Lambda::Function
     Properties:
@@ -26,7 +27,6 @@ Parameters:
       FunctionName: Pipeline-Demo
       Handler: "pipeline-demo-app::pipeline_demo_app.Function::FunctionHandler"
       MemorySize: 512
-      Role: null
       Runtime: "dotnetcore2.1"
       Timeout: 60
       Environment:
