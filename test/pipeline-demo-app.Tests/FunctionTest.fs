@@ -33,17 +33,17 @@ module FunctionTest =
         Assert.Equal(request.QuoteId, result.QuoteId)
         Assert.Equal("cached quote", result.Text)
 
-    [<Fact>]
-    let ``Invoke Quote Lambda Function for no cache``() =
-        // Invoke the lambda function and confirm the string was upper cased.
-        let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
-        let context = TestLambdaContext()
-        let request = { ClientId = 2; QuoteId = 1 }
-        let result = lambdaFunction request // context
+    //[<Fact>]
+    //let ``Invoke Quote Lambda Function for no cache``() =
+    //    // Invoke the lambda function and confirm the string was upper cased.
+    //    let lambdaFunction = helpers.Handler ReadFromCache FetchFromApi
+    //    let context = TestLambdaContext()
+    //    let request = { ClientId = 2; QuoteId = 1 }
+    //    let result = lambdaFunction request // context
 
-        Assert.Equal(request.ClientId, result.ClientId)
-        Assert.Equal(request.QuoteId, result.QuoteId)
-        Assert.Equal("api quote", result.Text)
+    //    Assert.Equal(request.ClientId, result.ClientId)
+    //    Assert.Equal(request.QuoteId, result.QuoteId)
+    //    Assert.Equal("api quote", result.Text)
 
     // let ``Data in cache should not call api``
     // let ``Data in cache should not call SSM``
