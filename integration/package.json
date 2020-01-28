@@ -1,10 +1,10 @@
 {
-  "name": "link-transformation-integration",
+  "name": "pipeline-demo-tests",
   "version": "1.0.0",
-  "description": "Stand alone integration tests for the link transformation service",
+  "description": "Stand alone black box tests",
   "main": "index.js",
-  "repository": "git@github.com:SaleCycle/link-transformation.git",
-  "author": "developers@salecycle.com",
+  "repository": "",
+  "author": "",
   "license": "MIT",
   "private": true,
   "devDependencies": {
@@ -27,8 +27,8 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "integration:quick": "mocha --require ts-node/register --file suites/global.ts suites/**/index.ts --timeout 10000",
-    "integration:debug": "mocha --inspect-brk --require ts-node/register --tsconfig-paths/register --file suites/global.ts suites/**/index.ts --timeout 10000",
-    "integration": "mocha --require ts-node/register --reporter mocha-multi-reporters --reporter-options configFile=reporterconfig.json --file suites/global.ts suites/**/index.ts --timeout 10000"
+    "integration:quick": "mocha --require ts-node/register --file suites/global.ts suites/**/index.ts --timeout 60000",
+    "integration:debug": "mocha --inspect-brk --require ts-node/register --tsconfig-paths/register --file suites/global.ts suites/**/index.ts --timeout 60000",
+    "integration": "mocha --require ts-node/register --reporter mocha-multi-reporters --reporter-options configFile=reporterconfig.json --file suites/global.ts suites/**/index.ts --timeout 60000"
   }
 }
