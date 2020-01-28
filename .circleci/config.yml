@@ -173,6 +173,8 @@ workflows:
               only: master
 
       - promote:
+          fromenvironment: dev
+          toenvironment: test
           context: aws-publish # Should be promote context
           requires:
             - quality-gate
