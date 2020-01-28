@@ -23,8 +23,9 @@ jobs:
       - run:
           name: install aws lambda tools
           command: |
+            sudo apt-get update
+            sudo apt-get install zip
             dotnet tool install -g Amazon.Lambda.Tools
-
 
       - run:
           name: Install packages
