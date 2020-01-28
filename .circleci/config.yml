@@ -25,6 +25,7 @@ jobs:
           command: |
             dotnet tool install -g Amazon.Lambda.Tools
 
+
       - run:
           name: Install packages
           command: dotnet restore
@@ -40,7 +41,8 @@ jobs:
       - run:
           name: package app
           command: |
-            dotnet lambda package --project-location ./src/pipeline-demo-app/
+            export PATH="$PATH:/root/.dotnet/tools"
+            dotnet lambda package --project-location ./src/pipeline-demo-app/ -o lambda.zip
 
 workflows:
   version: 2
