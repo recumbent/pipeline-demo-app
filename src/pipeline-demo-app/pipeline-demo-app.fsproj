@@ -5,6 +5,9 @@
     <AWSProjectType>Lambda</AWSProjectType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="aws-lambda-tools-defaults.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="appSettings.aws.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -15,11 +18,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Function.fs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="aws-lambda-tools-defaults.json" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Readme.md" />
     <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.110.19" />
@@ -28,9 +28,5 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="aws-lambda-tools-defaults.json" />
-    <None Include="Readme.md" />
   </ItemGroup>
 </Project>
